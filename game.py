@@ -1,5 +1,6 @@
 import pygame
 import time
+import random
 
 pygame.init()
 
@@ -20,6 +21,9 @@ clock = pygame.time.Clock()
 catImg = pygame.image.load('cat.png')
 catImg = pygame.transform.scale(catImg, (cat_width,cat_height))
 
+def things(thingx, thingy, thingw, thingh, color):
+    pygame.draw.rect(gameDisplay, color, [thingx, thingy, thingw, thingh])
+
 def cat(x,y):
     gameDisplay.blit(catImg, (x,y))
 
@@ -37,13 +41,19 @@ def message_display(text):
     game_loop()
 
 def crash():
-    message_display('You crashed!')
+    message_display('Oops!')
 
 def game_loop():
-    x = (display_width * 0.45)
-    y = (display_height * 0.8)
+    x = (display_width * 0.05)
+    y = (display_height * 0.45)
 
-    x_change = 0
+    y_change = 0
+
+    thing_startx = 1600
+    thing_starty = random.randrange(0, display_height)
+    thing_speed = 7
+    thing_width = 100
+    thing_height = 100
 
     gameExit = False
 
@@ -54,24 +64,32 @@ def game_loop():
                 quit()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    x_change = -5
-                elif event.key == pygame.K_RIGHT:
-                    x_change = 5
+                if event.key == pygame.K_UP:
+                    y_change = -5
+                elif event.key == pygame.K_DOWN:
+                    y_change = 5
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                    x_change = 0
+                if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
+                    y_change = 0
 
             print(event)
 
-        x += x_change
+        y += y_change
 
         gameDisplay.fill(white)
+
+        things(thing_startx, thing_starty, thing_width, thing_height, black)
+        thing_startx -= thing_speed
+
         cat(x,y)
 
-        if x > display_width-cat_width or x < 0:
+        if y > display_height-cat_height or y < 0:
             crash()
+
+        if thing_startx < 0:
+            thing_startx = display_width + thing_width
+            thing_starty = random.randrange(0,display_height-thing_height)
 
         pygame.display.update()
         clock.tick(60)
