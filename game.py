@@ -91,6 +91,9 @@ def game_loop():
             thing_startx = display_width + thing_width
             thing_starty = random.randrange(0,display_height-thing_height)
 
+        if x+cat_width > thing_startx:
+            if y > thing_starty and y < thing_starty+thing_height or y+cat_height > thing_starty and y+cat_height < thing_starty+thing_height:
+                crash()
         pygame.display.update()
         clock.tick(60)
 
